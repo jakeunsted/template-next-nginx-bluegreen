@@ -1,0 +1,33 @@
+
+version: '3.8'
+services:
+  app-blue:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: production
+    image: app-prod-blue
+    container_name: app-prod-blue
+    restart: always
+    ports:
+      - "3001:3000"
+
+  app-green:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: production
+    image: app-prod-green
+    container_name: app-prod-green
+    restart: always
+    ports:
+      - "3002:3000"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-prod
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf
