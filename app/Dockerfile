@@ -1,11 +1,19 @@
 # Development stage
-FROM node:20 AS development
+FROM node:24 AS development
 
 WORKDIR /app
 
-COPY package*.json ./
+# Install build dependencies for native modules
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN npm install
+ENV NODE_ENV=development
+
+COPY package*.json ./
+RUN npm ci
 
 COPY . .
 
@@ -14,13 +22,23 @@ EXPOSE 3000
 CMD [ "npm", "run", "dev" ]
 
 # Production stage
-FROM node:20 AS production
+FROM --platform=linux/amd64 node:24 AS production
 
 WORKDIR /app
 
-COPY package*.json ./
+ENV NODE_ENV=production
+ENV npm_config_target_platform=linux
+ENV npm_config_target_arch=x64
+ENV npm_config_target_libc=glibc
 
-RUN npm install
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY package*.json ./
+RUN npm ci
 
 COPY . .
 
