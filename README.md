@@ -1,4 +1,4 @@
-# WinPlus Admin
+# template
 
 This project is a Nuxt.js application with a Docker-based blue/green deployment setup.
 
