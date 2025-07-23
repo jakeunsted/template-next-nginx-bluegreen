@@ -15,7 +15,7 @@ PROD_ENABLED_CONF = nginx/prod.conf
 # --- Development Environment ---
 dev-up: ## Start the development environment
 	@echo "Starting development environment..."
-	@docker-compose -f docker-compose.dev.yml up -d
+	@docker-compose -f docker-compose.dev.yml up -d --build
 
 dev-down: ## Stop the development environment
 	@echo "Stopping development environment..."

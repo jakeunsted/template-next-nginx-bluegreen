@@ -1,26 +1,27 @@
 {
-  "name": "winplus-admin",
-  "type": "module",
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "start": "nuxt start"
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "nuxt": "^3.17.6",
-    "vue": "^3.5.17",
-    "vue-router": "^4.5.1",
-    "vuetify": "^3.9.0",
-    "vuetify-nuxt-module": "^0.18.7"
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "next": "15.4.3"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.14.0",
-    "autoprefixer": "^10.4.21",
-    "esbuild": "^0.20.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17"
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.3",
+    "@eslint/eslintrc": "^3"
   }
 }

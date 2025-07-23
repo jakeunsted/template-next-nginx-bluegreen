@@ -5,15 +5,15 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
-      target: development
-    image: app-dev
-    container_name: app-dev
+    image: nextjs-app
+    container_name: nextjs-app
     restart: always
     ports:
       - "3000:3000"
     volumes:
       - ./app:/app
       - /app/node_modules
+    command: npm run dev
 
   nginx:
     image: nginx:latest

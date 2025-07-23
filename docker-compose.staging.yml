@@ -5,9 +5,8 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
-      target: production
-    image: app-staging-blue
-    container_name: app-staging-blue
+    image: nextjs-app-blue
+    container_name: nextjs-app-blue
     restart: always
     ports:
       - "3001:3000"
@@ -16,9 +15,8 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
-      target: production
-    image: app-staging-green
-    container_name: app-staging-green
+    image: nextjs-app-green
+    container_name: nextjs-app-green
     restart: always
     ports:
       - "3002:3000"
