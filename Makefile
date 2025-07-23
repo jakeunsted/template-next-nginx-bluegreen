@@ -25,7 +25,7 @@ dev-down: ## Stop the development environment
 staging-up: ## Start the staging environment
 	@echo "Starting staging environment..."
 	@mkdir -p nginx/sites-enabled
-	@ln -sf ../sites-available/staging-blue.conf $(STAGING_ENABLED_CONF)
+	@rm -f $(STAGING_ENABLED_CONF) && cp nginx/sites-available/staging-blue.conf $(STAGING_ENABLED_CONF)
 	@docker-compose -f docker-compose.staging.yml up -d --build
 
 staging-down: ## Stop the staging environment
@@ -46,20 +46,20 @@ staging-deploy: ## Deploy a new version to the inactive staging environment
 staging-switch: ## Switch the Nginx proxy to the new version in staging
 	@if [ -L $(STAGING_ENABLED_CONF) ] && [ "$(shell readlink $(STAGING_ENABLED_CONF))" = "$(STAGING_BLUE_CONF)" ]; then \
 		echo "Switching to green"; \
-		ln -sf $(STAGING_GREEN_CONF) $(STAGING_ENABLED_CONF); \
+		cp $(STAGING_GREEN_CONF) $(STAGING_ENABLED_CONF); \
 	else \
 		echo "Switching to blue"; \
-		ln -sf $(STAGING_BLUE_CONF) $(STAGING_ENABLED_CONF); \
+		cp $(STAGING_BLUE_CONF) $(STAGING_ENABLED_CONF); \
 	fi
 	@docker-compose -f docker-compose.staging.yml restart nginx
 
 staging-rollback: ## Switch back to the previous version in staging
 	@if [ -L $(STAGING_ENABLED_CONF) ] && [ "$(shell readlink $(STAGING_ENABLED_CONF))" = "$(STAGING_BLUE_CONF)" ]; then \
 		echo "Rolling back to green"; \
-		ln -sf $(STAGING_GREEN_CONF) $(STAGING_ENABLED_CONF); \
-	else \
-		echo "Rolling back to blue"; \
-		ln -sf $(STAGING_BLUE_CONF) $(STAGING_ENABLED_CONF); \
+		cp $(STAGING_GREEN_CONF) $(STAGING_ENABLED_CONF); \
+    else \
+        echo "Rolling back to blue"; \
+        cp $(STAGING_BLUE_CONF) $(STAGING_ENABLED_CONF); \
 	fi
 	@docker-compose -f docker-compose.staging.yml restart nginx
 
@@ -90,7 +90,7 @@ staging-verify: ## Verify the newly deployed staging instance
 prod-up: ## Start the production environment
 	@echo "Starting production environment..."
 	@mkdir -p nginx/sites-enabled
-	@ln -sf ../sites-available/prod-blue.conf $(PROD_ENABLED_CONF)
+	@rm -f $(PROD_ENABLED_CONF) && cp nginx/sites-available/prod-blue.conf $(PROD_ENABLED_CONF)
 	@docker-compose -f docker-compose.prod.yml up -d --build
 
 prod-down: ## Stop the production environment
@@ -111,20 +111,20 @@ prod-deploy: ## Deploy a new version to the inactive production environment
 prod-switch: ## Switch the Nginx proxy to the new version in production
 	@if [ -L $(PROD_ENABLED_CONF) ] && [ "$(shell readlink $(PROD_ENABLED_CONF))" = "$(PROD_BLUE_CONF)" ]; then \
 		echo "Switching to green"; \
-		ln -sf $(PROD_GREEN_CONF) $(PROD_ENABLED_CONF); \
+		cp $(PROD_GREEN_CONF) $(PROD_ENABLED_CONF); \
 	else \
 		echo "Switching to blue"; \
-		ln -sf $(PROD_BLUE_CONF) $(PROD_ENABLED_CONF); \
+		cp $(PROD_BLUE_CONF) $(PROD_ENABLED_CONF); \
 	fi
 	@docker-compose -f docker-compose.prod.yml restart nginx
 
 prod-rollback: ## Switch back to the previous version in production
 	@if [ -L $(PROD_ENABLED_CONF) ] && [ "$(shell readlink $(PROD_ENABLED_CONF))" = "$(PROD_BLUE_CONF)" ]; then \
 		echo "Rolling back to green"; \
-		ln -sf $(PROD_GREEN_CONF) $(PROD_ENABLED_CONF); \
+		cp $(PROD_GREEN_CONF) $(PROD_ENABLED_CONF); \
 	else \
 		echo "Rolling back to blue"; \
-		ln -sf $(PROD_BLUE_CONF) $(PROD_ENABLED_CONF); \
+		cp $(PROD_BLUE_CONF) $(PROD_ENABLED_CONF); \
 	fi
 	@docker-compose -f docker-compose.prod.yml restart nginx
 
