@@ -23,7 +23,7 @@ services:
 
   next-nginx:
     image: nginx:latest
-    container_name: next-nginx-prod
+    container_name: nextjs-nginx-prod
     restart: always
     ports:
       - "80:80"

@@ -21,9 +21,9 @@ services:
     ports:
       - "3002:3000"
 
-  nginx:
+  next-nginx:
     image: nginx:latest
-    container_name: nginx-staging
+    container_name: nextjs-nginx-staging
     restart: always
     ports:
       - "80:80"

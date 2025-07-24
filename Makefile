@@ -46,12 +46,24 @@ staging-deploy: ## Deploy a new version to the inactive staging environment
 staging-switch: ## Switch the Nginx proxy to the new version in staging
 	@if [ -f $(STAGING_ENABLED_CONF) ] && grep -q "nextjs-app-blue" $(STAGING_ENABLED_CONF); then \
 		echo "Switching to green"; \
+		if ! docker-compose -f docker-compose.staging.yml ps -q app-green | grep -q .; then \
+			echo "Starting app-green..."; \
+			docker-compose -f docker-compose.staging.yml up -d app-green; \
+		else \
+			echo "app-green is already running."; \
+		fi; \
 		cp $(STAGING_GREEN_CONF) $(STAGING_ENABLED_CONF); \
 	else \
 		echo "Switching to blue"; \
+		if ! docker-compose -f docker-compose.staging.yml ps -q app-blue | grep -q .; then \
+			echo "Starting app-blue..."; \
+			docker-compose -f docker-compose.staging.yml up -d app-blue; \
+		else \
+			echo "app-blue is already running."; \
+		fi; \
 		cp $(STAGING_BLUE_CONF) $(STAGING_ENABLED_CONF); \
 	fi
-	@docker-compose -f docker-compose.staging.yml restart nginx
+	@docker-compose -f docker-compose.staging.yml restart next-nginx
 
 staging-rollback: ## Switch back to the previous version in staging
 	@if [ -f $(STAGING_ENABLED_CONF) ] && grep -q "nextjs-app-blue" $(STAGING_ENABLED_CONF); then \
@@ -61,7 +73,7 @@ staging-rollback: ## Switch back to the previous version in staging
         echo "Rolling back to blue"; \
         cp $(STAGING_BLUE_CONF) $(STAGING_ENABLED_CONF); \
 	fi
-	@docker-compose -f docker-compose.staging.yml restart nginx
+	@docker-compose -f docker-compose.staging.yml restart next-nginx
 
 staging-clean: ## Shut down the inactive blue or green instance in staging
 	@if [ -f $(STAGING_ENABLED_CONF) ] && grep -q "nextjs-app-blue" $(STAGING_ENABLED_CONF); then \
@@ -119,9 +131,21 @@ prod-switch: ## Switch the Nginx proxy to the new version in production
 	@echo "Result of grep -q nextjs-app-blue: $(shell grep -q "nextjs-app-blue" $(PROD_ENABLED_CONF) && echo "true" || echo "false")"
 	@if [ -f $(PROD_ENABLED_CONF) ] && grep -q "nextjs-app-blue" $(PROD_ENABLED_CONF); then \
 		echo "Switching to green"; \
+		if ! docker-compose -f docker-compose.prod.yml ps -q app-green | grep -q .; then \
+			echo "Starting app-green..."; \
+			docker-compose -f docker-compose.prod.yml up -d app-green; \
+		else \
+			echo "app-green is already running."; \
+		fi; \
 		cp $(PROD_GREEN_CONF) $(PROD_ENABLED_CONF); \
 	else \
 		echo "Switching to blue"; \
+		if ! docker-compose -f docker-compose.prod.yml ps -q app-blue | grep -q .; then \
+			echo "Starting app-blue..."; \
+			docker-compose -f docker-compose.prod.yml up -d app-blue; \
+		else \
+			echo "app-blue is already running."; \
+		fi; \
 		cp $(PROD_BLUE_CONF) $(PROD_ENABLED_CONF); \
 	fi
 	@docker-compose -f docker-compose.prod.yml restart next-nginx
@@ -134,9 +158,6 @@ prod-clean: ## Shut down the inactive blue or green instance in production
 		echo "Cleaning up blue"; \
 		docker-compose -f docker-compose.prod.yml stop app-blue; \
 	fi
-
-
-
 
 prod-status: ## Checks the current active environment in production
 	@if [ -f $(PROD_ENABLED_CONF) ]; then \
